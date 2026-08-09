@@ -48,6 +48,17 @@ r1_cmds = [
     "line vty 0 4",
     "access-class MGMT-ACCESS in",
     "exit",
+    # --- บล็อก data-plane traffic ไม่ให้วิ่งไปหา mgmt subnet ---
+    "ip access-list extended BLOCK-DATA-TO-MGMT",
+    "deny ip any 172.31.41.0 0.0.0.15",
+    "permit ip any any",
+    "exit",
+    "interface gi0/1",
+    "ip access-group BLOCK-DATA-TO-MGMT in",
+    "exit",
+    "interface gi0/2",
+    "ip access-group BLOCK-DATA-TO-MGMT in",
+    "exit",
 ]
 
 r2_cmds = [
@@ -84,6 +95,17 @@ r2_cmds = [
     "exit",
     "line vty 0 4",
     "access-class MGMT-ACCESS in",
+    "exit",
+    # --- บล็อก data-plane traffic ไม่ให้วิ่งไปหา mgmt subnet ---
+    "ip access-list extended BLOCK-DATA-TO-MGMT",
+    "deny ip any 172.31.41.0 0.0.0.15",
+    "permit ip any any",
+    "exit",
+    "interface gi0/1",
+    "ip access-group BLOCK-DATA-TO-MGMT in",
+    "exit",
+    "interface gi0/2",
+    "ip access-group BLOCK-DATA-TO-MGMT in",
     "exit",
 ]
 
