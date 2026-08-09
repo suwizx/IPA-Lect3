@@ -28,6 +28,14 @@ s1_cmds = [
 ]
 
 r1_cmds = [
+    "interface gi0/1",
+    "no vrf forwarding control-data",
+    "ip address 172.31.41.17 255.255.255.240",
+    "exit",
+    "interface gi0/2",
+    "no vrf forwarding control-data",
+    "ip address 172.31.41.33 255.255.255.240",
+    "exit",
     "router ospf 1",
     "network 172.31.41.16 0.0.0.15 area 0",
     "network 172.31.41.32 0.0.0.15 area 0",
@@ -43,6 +51,14 @@ r1_cmds = [
 ]
 
 r2_cmds = [
+    "interface gi0/1",
+    "no vrf forwarding control-data",
+    "ip address 172.31.41.34 255.255.255.240",
+    "exit",
+    "interface gi0/2",
+    "no vrf forwarding control-data",
+    "ip address 172.31.41.49 255.255.255.240",
+    "exit",
     "router ospf 1",
     "network 172.31.41.32 0.0.0.15 area 0",
     "network 172.31.41.48 0.0.0.15 area 0",
@@ -71,7 +87,7 @@ r2_cmds = [
     "exit",
 ]
 
-config_map = {"s1": s1_cmds, "r1": r1_cmds, "r2": r2_cmds}
+config_map = {"r1": r1_cmds, "r2": r2_cmds}
 
 for name, cmds in config_map.items():
     print(f"=== Configuring {name} ===")
