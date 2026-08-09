@@ -1,0 +1,30 @@
+interface gi0/1
+no vrf forwarding control-data
+ip address {{ r1_g1_ip }} {{ mask }}
+exit
+interface gi0/2
+no vrf forwarding control-data
+ip address {{ r1_g2_ip }} {{ mask }}
+exit
+router ospf 1
+network {{ ospf_net1 }} {{ ospf_wc }} area 0
+network {{ ospf_net2 }} {{ ospf_wc }} area 0
+network {{ r1_loopback }} 0.0.0.0 area 0
+exit
+ip access-list standard MGMT-ACCESS
+permit {{ mgmt_subnet }} {{ mgmt_wildcard }}
+permit {{ pc_subnet }} {{ pc_wildcard }}
+exit
+line vty 0 4
+access-class MGMT-ACCESS in
+exit
+ip access-list extended BLOCK-DATA-TO-MGMT
+deny ip any {{ mgmt_subnet }} {{ mgmt_wildcard }}
+permit ip any any
+exit
+interface gi0/1
+ip access-group BLOCK-DATA-TO-MGMT in
+exit
+interface gi0/2
+ip access-group BLOCK-DATA-TO-MGMT in
+exit
