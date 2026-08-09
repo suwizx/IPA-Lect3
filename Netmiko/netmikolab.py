@@ -14,20 +14,64 @@ s1_cmds = [
     "vlan 101",
     "name control-data",
     "exit",
-    "interface range gi0/1, gi1/1",
+    "interface range gi0/1, gi0/2",
     "switchport mode access",
     "switchport access vlan 101",
     "exit",
     "ip access-list standard MGMT-ACCESS",
     "permit 172.31.41.0 0.0.0.15",
-    "permit 10.30.6.0 0.0.0.255",
+    "permit 192.168.1.0 0.0.0.255",
     "exit",
     "line vty 0 4",
     "access-class MGMT-ACCESS in",
     "exit",
 ]
 
-config_map = {"s1": s1_cmds}
+r1_cmds = [
+    "router ospf 1",
+    "network 172.31.41.16 0.0.0.15 area 0",
+    "network 172.31.41.32 0.0.0.15 area 0",
+    "network 1.1.1.1 0.0.0.0 area 0",
+    "exit",
+    "ip access-list standard MGMT-ACCESS",
+    "permit 172.31.41.0 0.0.0.15",
+    "permit 192.168.1.0 0.0.0.255",
+    "exit",
+    "line vty 0 4",
+    "access-class MGMT-ACCESS in",
+    "exit",
+]
+
+r2_cmds = [
+    "router ospf 1",
+    "network 172.31.41.32 0.0.0.15 area 0",
+    "network 172.31.41.48 0.0.0.15 area 0",
+    "network 2.2.2.2 0.0.0.0 area 0",
+    "default-information originate",
+    "exit",
+    "interface g0/3",
+    "ip nat outside",
+    "exit",
+    "interface g0/1",
+    "ip nat inside",
+    "exit",
+    "interface g0/2",
+    "ip nat inside",
+    "exit",
+    "access-list 1 permit 172.31.41.0 0.0.0.15",
+    "access-list 1 permit 172.31.41.16 0.0.0.15",
+    "access-list 1 permit 172.31.41.48 0.0.0.15",
+    "ip nat inside source list 1 interface g0/3 overload",
+    "ip access-list standard MGMT-ACCESS",
+    "permit 172.31.41.0 0.0.0.15",
+    "permit 192.168.1.0 0.0.0.255",
+    "exit",
+    "line vty 0 4",
+    "access-class MGMT-ACCESS in",
+    "exit",
+]
+
+config_map = {"s1": s1_cmds, "r1": r1_cmds, "r2": r2_cmds}
 
 for name, cmds in config_map.items():
     print(f"=== Configuring {name} ===")
